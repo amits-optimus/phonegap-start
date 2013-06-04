@@ -1,42 +1,661 @@
-<!DOCTYPE html>
-<!--
-    Licensed to the Apache Software Foundation (ASF) under one
-    or more contributor license agreements.  See the NOTICE file
-    distributed with this work for additional information
-    regarding copyright ownership.  The ASF licenses this file
-    to you under the Apache License, Version 2.0 (the
-    "License"); you may not use this file except in compliance
-    with the License.  You may obtain a copy of the License at
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>RREVG</title>
+<meta name="author" content="DZineBlog">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="HandheldFriendly" content="true">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<!-- APPLE TOUCH APP ICONS
+	<link rel="apple-touch-icon" sizes="72x72" href="apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="apple-touch-icon-114x114.png">
+	<link rel="apple-touch-icon" href="apple-touch-icon-57x57.png">
+	-->
+<link rel="shortcut icon"
+	href="http://dzineblog.com/wp-content/themes/journalist/favicon.png">
+<link rel="icon"
+	href="http://dzineblog.com/wp-content/themes/journalist/favicon.png">
+<link rel="stylesheet" type="text/css" href="styles.css" media="all">
+<link rel="alternate stylesheet" type="text/css" href="responsive.css"
+	media="all">
+<script type="text/javascript"
+	src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+<script type="text/javascript"
+	src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<script type="text/javascript" src="phonegap.js"></script>
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 
-    http://www.apache.org/licenses/LICENSE-2.0
+<script type="text/javascript">
 
-    Unless required by applicable law or agreed to in writing,
-    software distributed under the License is distributed on an
-    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-     KIND, either express or implied.  See the License for the
-    specific language governing permissions and limitations
-    under the License.
--->
-<html>
-    <head>
-        <meta charset="utf-8" />
-        <meta name="format-detection" content="telephone=no" />
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-        <link rel="stylesheet" type="text/css" href="css/index.css" />
-        <title>Hello World</title>
-    </head>
-    <body>
-        <div class="app">
-            <h1>PhoneGap</h1>
-            <div id="deviceready" class="blink">
-                <p class="event listening">Connecting to Device</p>
-                <p class="event received">Device is Ready</p>
-            </div>
-        </div>
-        <script type="text/javascript" src="phonegap.js"></script>
-        <script type="text/javascript" src="js/index.js"></script>
-        <script type="text/javascript">
-            app.initialize();
-        </script>
-    </body>
+	var jsonData = '{"items":[{"name":"Acategory","Terms":[{"Term":"ATerm1","Definition":"ADefinition1........................................................................................................................................................................................................................"},{"Term":"ATerm2","Definition":"ADefinition2"}]},{"name":"Bcategory","Terms":[{"Term":"BTerm1","Definition":"BDefinition1"},{"Term":"BTerm2","Definition":"BDefinition2"}]},{"name":"Dcategory","Terms":[{"Term":"DTerm3","Definition":"DDefinition3"}]},{"name":"Ccategory4","Terms":[{"Term":"CTerm4","Definition":"Definition4"}]},{"name":"Ccategory44","Terms":[{"Term":"CTerm44","Definition":"Definition4"}]},{"name":"category5","Terms":[{"Term":"Term5","Definition":"Definition5"}]},{"name":"category6","Terms":[{"Term":"Term6","Definition":"Definition6"}]},{"name":"category7","Terms":[{"Term":"Term7","Definition":"Definition7"}]},{"name":"category8","Terms":[{"Term":"Term8","Definition":"Definition8"}]},{"name":"category9","Terms":[{"Term":"Term9","Definition":"Definition9"}]},{"name":"category10","Terms":[{"Term":"Term10","Definition":"Definition10"},{"Term":"Term11","Definition":"Definition11"}]}]}';
+	var termArray = [];
+	var categoryArray = [];
+	function getListOfTrends() {
+		var obj = $.parseJSON(jsonData);
+
+		$.each(obj.items, function(key, val) {
+			categoryArray.push(val.name);
+			$.each(val.Terms, function(key, val) {
+				termArray.push(val.Term);
+
+			});
+		});
+		termArray.sort();
+		categoryArray.sort();
+	}
+
+	function getDefinitionByTerms(term) {
+		term = term.trim();
+		var definition;
+		var found = false;
+		var obj = $.parseJSON(jsonData);
+		$.each(obj.items, function(key, val) {
+			if (found) {
+				return false;
+			}
+			$.each(val.Terms, function(key, val) {
+				if (val.Term == term) {
+					definition = val.Definition;
+					found = true;
+					return false;
+				}
+
+			});
+		});
+		return definition;
+	}
+	
+	function prepareList() {
+		$('#nlists').find('li:has(ul)')
+		.click( function(event) {
+			if (this == event.target) {
+				$(this).toggleClass('expanded');
+				$(this).children('ul').toggle('medium');
+			}
+			return false;
+		})
+		.addClass('collapsed')
+		.children('ul').hide();
+
+	};
+	function getFilteredTermsByCategory(category) {
+		category = category.trim();
+		var termsByCategory = [];
+		var found = false;
+		var obj = $.parseJSON(jsonData);
+		$.each(obj.items, function(key, val) {
+			if (found) {
+				return false;
+			}
+			if (val.name == category) {
+				$.each(val.Terms, function(key, val) {
+					//alert(val.Term);
+					termsByCategory.push(val.Term);
+				});
+				found = true;
+				return false;
+			}
+
+		});
+		termsByCategory.sort();
+		return termsByCategory;
+	}
+	function load() {
+		tab('tab1');
+		var localPlaceholder = document.getElementById("nlists");
+		var li = document.createElement("li");
+		li.appendChild(document.createTextNode(""));
+		li.className = "head";
+		localPlaceholder.appendChild(li);
+		getListOfTrends();
+		for (i = 0; i < categoryArray.length; i++) {
+			var lii = document.createElement("li");
+			lii.appendChild(document.createTextNode(categoryArray[i]));
+			var subList = document.createElement("ul");
+			var filteredTerms = getFilteredTermsByCategory(categoryArray[i]);
+			for(j=0;j<filteredTerms.length;j++){
+				var subListItem = document.createElement("li");
+				subListItem.appendChild(document.createTextNode(filteredTerms[j]));
+				subListItem.onclick = function listItemIndexList() {
+					$( "#dialog" ).dialog({ width: 250 });
+					document.getElementById("dialog").innerHTML = getDefinitionByTerms(this.innerHTML);
+				}
+				subListItem.className = "listItemIndexList1";
+				subList.appendChild(subListItem);
+			}
+			lii.appendChild(subList);
+			
+			localPlaceholder.appendChild(lii);
+		}
+		for (i = 0; i < termArray.length; i++) {
+			if (termArray[i].charAt(0) == 'A') {
+				document.getElementById('lA').style.display = 'block';
+				var par = document.getElementById('ulA');
+				var uli = document.createElement("li");
+				uli.appendChild(document.createTextNode(termArray[i]));
+				uli.className = "listItemIndexList";
+				par.appendChild(uli);
+				uli.onclick = function listItemIndexList() {
+					var test = getDefinitionByTerms(this.innerHTML);
+					$( "#dialog" ).dialog({ width: 250 });
+					document.getElementById("dialog").innerHTML = test;
+				}
+
+			} else if (termArray[i].charAt(0) == 'B') {
+				document.getElementById('lB').style.display = 'block';
+				var par = document.getElementById('ulB');
+				var uli = document.createElement("li");
+				uli.appendChild(document.createTextNode(termArray[i]));
+				uli.className = "listItemIndexList";
+				par.appendChild(uli);
+				uli.onclick = function listItemIndexList() {
+					var test = getDefinitionByTerms(this.innerHTML);
+					$( "#dialog" ).dialog({ width: 250 });
+					document.getElementById("dialog").innerHTML = test;
+				}
+
+			} else if (termArray[i].charAt(0) == 'C') {
+				document.getElementById('lC').style.display = 'block';
+				var par = document.getElementById('ulC');
+				var uli = document.createElement("li");
+				uli.appendChild(document.createTextNode(termArray[i]));
+				uli.className = "listItemIndexList";
+				par.appendChild(uli);
+				uli.onclick = function listItemIndexList() {
+					var test = getDefinitionByTerms(this.innerHTML);
+					$( "#dialog" ).dialog({ width: 250 });
+					document.getElementById("dialog").innerHTML = test;
+				}
+
+			} else if (termArray[i].charAt(0) == 'D') {
+				document.getElementById('lD').style.display = 'block';
+				var par = document.getElementById('ulD');
+				var uli = document.createElement("li");
+				uli.appendChild(document.createTextNode(termArray[i]));
+				uli.className = "listItemIndexList";
+				par.appendChild(uli);
+				uli.onclick = function listItemIndexList() {
+					var test = getDefinitionByTerms(this.innerHTML);
+					$( "#dialog" ).dialog({ width: 250 });
+					document.getElementById("dialog").innerHTML = test;
+				}
+
+			} else if (termArray[i].charAt(0) == 'E') {
+				document.getElementById('lE').style.display = 'block';
+				var par = document.getElementById('ulE');
+				var uli = document.createElement("li");
+				uli.appendChild(document.createTextNode(termArray[i]));
+				uli.className = "listItemIndexList";
+				par.appendChild(uli);
+				uli.onclick = function listItemIndexList() {
+					var test = getDefinitionByTerms(this.innerHTML);
+					$( "#dialog" ).dialog({ width: 250 });
+					document.getElementById("dialog").innerHTML = test;
+				}
+
+			} else if (termArray[i].charAt(0) == 'F') {
+				document.getElementById('lF').style.display = 'block';
+				var par = document.getElementById('ulF');
+				var uli = document.createElement("li");
+				uli.appendChild(document.createTextNode(termArray[i]));
+				uli.className = "listItemIndexList";
+				par.appendChild(uli);
+				uli.onclick = function listItemIndexList() {
+					var test = getDefinitionByTerms(this.innerHTML);
+					$( "#dialog" ).dialog({ width: 250 });
+					document.getElementById("dialog").innerHTML = test;
+				}
+
+			} else if (termArray[i].charAt(0) == 'H') {
+				document.getElementById('lH').style.display = 'block';
+				var par = document.getElementById('ulH');
+				var uli = document.createElement("li");
+				uli.appendChild(document.createTextNode(termArray[i]));
+				uli.className = "listItemIndexList";
+				par.appendChild(uli);
+				uli.onclick = function listItemIndexList() {
+					var test = getDefinitionByTerms(this.innerHTML);
+					$( "#dialog" ).dialog({ width: 250 });
+					document.getElementById("dialog").innerHTML = test;
+				}
+
+			} else if (termArray[i].charAt(0) == 'I') {
+				document.getElementById('lI').style.display = 'block';
+				var par = document.getElementById('ulI');
+				var uli = document.createElement("li");
+				uli.appendChild(document.createTextNode(termArray[i]));
+				uli.className = "listItemIndexList";
+				par.appendChild(uli);
+				uli.onclick = function listItemIndexList() {
+					var test = getDefinitionByTerms(this.innerHTML);
+					$( "#dialog" ).dialog({ width: 250 });
+					document.getElementById("dialog").innerHTML = test;
+				}
+
+			} else if (termArray[i].charAt(0) == 'J') {
+				document.getElementById('lJ').style.display = 'block';
+				var par = document.getElementById('ulJ');
+				var uli = document.createElement("li");
+				uli.appendChild(document.createTextNode(termArray[i]));
+				uli.className = "listItemIndexList";
+				par.appendChild(uli);
+				uli.onclick = function listItemIndexList() {
+					var test = getDefinitionByTerms(this.innerHTML);
+					$( "#dialog" ).dialog({ width: 250 });
+					document.getElementById("dialog").innerHTML = test;
+				}
+
+			} else if (termArray[i].charAt(0) == 'K') {
+				document.getElementById('lK').style.display = 'block';
+				var par = document.getElementById('ulK');
+				var uli = document.createElement("li");
+				uli.appendChild(document.createTextNode(termArray[i]));
+				uli.className = "listItemIndexList";
+				par.appendChild(uli);
+				uli.onclick = function listItemIndexList() {
+					var test = getDefinitionByTerms(this.innerHTML);
+					$( "#dialog" ).dialog({ width: 250 });
+					document.getElementById("dialog").innerHTML = test;
+				}
+			} else if (termArray[i].charAt(0) == 'L') {
+				document.getElementById('lL').style.display = 'block';
+				var par = document.getElementById('ulL');
+				var uli = document.createElement("li");
+				uli.appendChild(document.createTextNode(termArray[i]));
+				uli.className = "listItemIndexList";
+				par.appendChild(uli);
+				uli.onclick = function listItemIndexList() {
+					var test = getDefinitionByTerms(this.innerHTML);
+					$( "#dialog" ).dialog({ width: 250 });
+					document.getElementById("dialog").innerHTML = test;
+				}
+			} else if (termArray[i].charAt(0) == 'M') {
+				document.getElementById('lM').style.display = 'block';
+				var par = document.getElementById('ulM');
+				var uli = document.createElement("li");
+				uli.appendChild(document.createTextNode(termArray[i]));
+				uli.className = "listItemIndexList";
+				par.appendChild(uli);
+				uli.onclick = function listItemIndexList() {
+					var test = getDefinitionByTerms(this.innerHTML);
+					$( "#dialog" ).dialog({ width: 250 });
+					document.getElementById("dialog").innerHTML = test;
+				}
+			} else if (termArray[i].charAt(0) == 'N') {
+				document.getElementById('lN').style.display = 'block';
+				var par = document.getElementById('ulN');
+				var uli = document.createElement("li");
+				uli.appendChild(document.createTextNode(termArray[i]));
+				uli.className = "listItemIndexList";
+				par.appendChild(uli);
+				uli.onclick = function listItemIndexList() {
+					var test = getDefinitionByTerms(this.innerHTML);
+					$( "#dialog" ).dialog({ width: 250 });
+					document.getElementById("dialog").innerHTML = test;
+				}
+			} else if (termArray[i].charAt(0) == 'O') {
+				document.getElementById('lO').style.display = 'block';
+				var par = document.getElementById('ulO');
+				var uli = document.createElement("li");
+				uli.appendChild(document.createTextNode(termArray[i]));
+				uli.className = "listItemIndexList";
+				par.appendChild(uli);
+				uli.onclick = function listItemIndexList() {
+					var test = getDefinitionByTerms(this.innerHTML);
+					$( "#dialog" ).dialog({ width: 250 });
+					document.getElementById("dialog").innerHTML = test;
+				}
+			} else if (termArray[i].charAt(0) == 'P') {
+				document.getElementById('lP').style.display = 'block';
+				var par = document.getElementById('ulP');
+				var uli = document.createElement("li");
+				uli.appendChild(document.createTextNode(termArray[i]));
+				uli.className = "listItemIndexList";
+				par.appendChild(uli);
+				uli.onclick = function listItemIndexList() {
+					var test = getDefinitionByTerms(this.innerHTML);
+					$( "#dialog" ).dialog({ width: 250 });
+					document.getElementById("dialog").innerHTML = test;
+				}
+			} else if (termArray[i].charAt(0) == 'Q') {
+				document.getElementById('lQ').style.display = 'block';
+				var par = document.getElementById('ulQ');
+				var uli = document.createElement("li");
+				uli.appendChild(document.createTextNode(termArray[i]));
+				uli.className = "listItemIndexList";
+				par.appendChild(uli);
+				uli.onclick = function listItemIndexList() {
+					var test = getDefinitionByTerms(this.innerHTML);
+					$( "#dialog" ).dialog({ width: 250 });
+					document.getElementById("dialog").innerHTML = test;
+				}
+			} else if (termArray[i].charAt(0) == 'R') {
+				document.getElementById('lR').style.display = 'block';
+				var par = document.getElementById('ulR');
+				var uli = document.createElement("li");
+				uli.appendChild(document.createTextNode(termArray[i]));
+				uli.className = "listItemIndexList";
+				par.appendChild(uli);
+				uli.onclick = function listItemIndexList() {
+					var test = getDefinitionByTerms(this.innerHTML);
+					$( "#dialog" ).dialog({ width: 250 });
+					document.getElementById("dialog").innerHTML = test;
+				}
+			} else if (termArray[i].charAt(0) == 'S') {
+				document.getElementById('lS').style.display = 'block';
+				var par = document.getElementById('ulS');
+				var uli = document.createElement("li");
+				uli.appendChild(document.createTextNode(termArray[i]));
+				uli.className = "listItemIndexList";
+				par.appendChild(uli);
+				uli.onclick = function listItemIndexList() {
+					var test = getDefinitionByTerms(this.innerHTML);
+					$( "#dialog" ).dialog({ width: 250 });
+					document.getElementById("dialog").innerHTML = test;
+				}
+			} else if (termArray[i].charAt(0) == 'T') {
+				document.getElementById('lT').style.display = 'block';
+				var par = document.getElementById('ulT');
+				var uli = document.createElement("li");
+				uli.appendChild(document.createTextNode(termArray[i]));
+				uli.className = "listItemIndexList";
+				par.appendChild(uli);
+				uli.onclick = function listItemIndexList() {
+					var test = getDefinitionByTerms(this.innerHTML);
+					$( "#dialog" ).dialog({ width: 250 });
+					document.getElementById("dialog").innerHTML = test;
+				}
+			} else if (termArray[i].charAt(0) == 'U') {
+				document.getElementById('lU').style.display = 'block';
+				var par = document.getElementById('ulU');
+				var uli = document.createElement("li");
+				uli.appendChild(document.createTextNode(termArray[i]));
+				uli.className = "listItemIndexList";
+				par.appendChild(uli);
+				uli.onclick = function listItemIndexList() {
+					var test = getDefinitionByTerms(this.innerHTML);
+					$( "#dialog" ).dialog({ width: 250 });
+					document.getElementById("dialog").innerHTML = test;
+				}
+			} else if (termArray[i].charAt(0) == 'V') {
+				document.getElementById('lV').style.display = 'block';
+				var par = document.getElementById('ulV');
+				var uli = document.createElement("li");
+				uli.appendChild(document.createTextNode(termArray[i]));
+				uli.className = "listItemIndexList";
+				par.appendChild(uli);
+				uli.onclick = function listItemIndexList() {
+					var test = getDefinitionByTerms(this.innerHTML);
+					$( "#dialog" ).dialog({ width: 250 });
+					document.getElementById("dialog").innerHTML = test;
+				}
+			} else if (termArray[i].charAt(0) == 'W') {
+				document.getElementById('lW').style.display = 'block';
+				var par = document.getElementById('ulW');
+				var uli = document.createElement("li");
+				uli.appendChild(document.createTextNode(termArray[i]));
+				uli.className = "listItemIndexList";
+				par.appendChild(uli);
+				uli.onclick = function listItemIndexList() {
+					var test = getDefinitionByTerms(this.innerHTML);
+					$( "#dialog" ).dialog({ width: 250 });
+					document.getElementById("dialog").innerHTML = test;
+				}
+			} else if (termArray[i].charAt(0) == 'X') {
+				document.getElementById('lX').style.display = 'block';
+				var par = document.getElementById('ulX');
+				var uli = document.createElement("li");
+				uli.appendChild(document.createTextNode(termArray[i]));
+				uli.className = "listItemIndexList";
+				par.appendChild(uli);
+				uli.onclick = function listItemIndexList() {
+					var test = getDefinitionByTerms(this.innerHTML);
+					$( "#dialog" ).dialog({ width: 250 });
+					document.getElementById("dialog").innerHTML = test;
+				}
+			} else if (termArray[i].charAt(0) == 'Y') {
+				document.getElementById('lY').style.display = 'block';
+				var par = document.getElementById('ulY');
+				var uli = document.createElement("li");
+				uli.appendChild(document.createTextNode(termArray[i]));
+				uli.className = "listItemIndexList";
+				par.appendChild(uli);
+				uli.onclick = function listItemIndexList() {
+					var test = getDefinitionByTerms(this.innerHTML);
+					$( "#dialog" ).dialog({ width: 250 });
+					document.getElementById("dialog").innerHTML = test;
+				}
+			}
+			else if (termArray[i].charAt(0) == 'Z') {
+				document.getElementById('lZ').style.display = 'block';
+				var par = document.getElementById('ulZ');
+				var uli = document.createElement("li");
+				uli.appendChild(document.createTextNode(termArray[i]));
+				uli.className = "listItemIndexList";
+				par.appendChild(uli);
+				uli.onclick = function listItemIndexList() {
+					var test = getDefinitionByTerms(this.innerHTML);
+					$( "#dialog" ).dialog({ width: 250 });
+					document.getElementById("dialog").innerHTML = test;
+				}
+			}
+		}
+		prepareList();
+	}
+</script>
+<script type="text/javascript">
+	function tab(tab) {
+		document.getElementById('tab1').style.display = 'none';
+		document.getElementById('tab2').style.display = 'none';
+		document.getElementById('tab3').style.display = 'none';
+		document.getElementById('li_tab1_a').style.background = "#ffffff";
+		document.getElementById('li_tab2_a').style.background = "#ffffff";
+		document.getElementById('li_tab3_a').style.background = "#ffffff";
+		
+		document.getElementById('li_tab1').setAttribute("class", "");
+		document.getElementById('li_tab2').setAttribute("class", "");
+		document.getElementById('li_tab3').setAttribute("class", "");
+		document.getElementById(tab).style.display = 'block';
+		document.getElementById('li_' + tab).setAttribute("class", "active");
+		document.getElementById('li_' + tab +'_a').style.background = "#f5f5f5";
+	}
+</script>
+
+<script type="text/javascript">
+	function searchDef(term) {
+		$( "#dialog" ).dialog({ width: 250 });
+
+		document.getElementById("dialog").innerHTML =  getDefinitionByTerms(term);
+	}
+</script>
+
+
+
+</head>
+
+<body onLoad="load()">
+	<header>
+		<h1>RREVG</h1>
+	</header>
+
+
+	<section id="content">
+		<div id="tabs" >
+			<ul scroll="no">
+				<li id="li_tab1" onClick="tab('tab1')"><a id="li_tab1_a">Terms</a></li>
+				<li id="li_tab2" onClick="tab('tab2')"><a id="li_tab2_a">Category</a></li>
+				<li id="li_tab3" onClick="tab('tab3')"><a id="li_tab3_a">Search</a></li>
+			</ul>
+			<div id="Content_Area">
+				<div id="tab2">
+					<nav>
+						<ul id="nlists">
+						</ul>
+						
+					</nav>					
+				</div>
+
+
+				<div id="tab3" style="display: none;">
+					<div id="search">
+					<br>
+					<input type="text" placeholder="Enter term here.." id="txtSearch" />
+					
+					<input type="button"  class="classname" id="btnSearch"  value="Search" onclick="searchDef(document.getElementById('txtSearch').value);"/>
+					<div id="dialog" title="Definition"/>
+					</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="tab1" style="display: none;">
+			<div id="iphone-scrollcontainer">
+				<ul id="iphone-search">
+					<li><a href="#A" title="A">A</a></li>
+					<li><a href="#B" title="B">B</a></li>
+					<li><a href="#C" title="C">C</a></li>
+					<li><a href="#D" title="D">D</a></li>
+					<li><a href="#E" title="E">E</a></li>
+					<li><a href="#F" title="F">F</a></li>
+					<li><a href="#G" title="G">G</a></li>
+					<li><a href="#H" title="H">H</a></li>
+					<li><a href="#I" title="I">I</a></li>
+					<li><a href="#J" title="J">J</a></li>
+					<li><a href="#K" title="K">K</a></li>
+					<li><a href="#L" title="L">L</a></li>
+					<li><a href="#M" title="M">M</a></li>
+					<li><a href="#N" title="N">N</a></li>
+					<li><a href="#O" title="O">O</a></li>
+					<li><a href="#P" title="P">P</a></li>
+					<li><a href="#Q" title="Q">Q</a></li>
+					<li><a href="#R" title="R">R</a></li>
+					<li><a href="#S" title="S">S</a></li>
+					<li><a href="#T" title="T">T</a></li>
+					<li><a href="#U" title="U">U</a></li>
+					<li><a href="#V" title="V">V</a></li>
+					<li><a href="#W" title="W">W</a></li>
+					<li><a href="#X" title="X">X</a></li>
+					<li><a href="#Y" title="Y">Y</a></li>
+					<li><a href="#Z" title="Z">Z</a></li>
+				</ul>
+				<ul id="iphone-scroll">
+					<li id="lA" style="display: none">
+						<div id="nav-indicator-fixed"></div> <a name="A"></a>
+						<div class="nav-indicator" id="nav-a">A</div>
+						<ul id="ulA">
+						</ul></li>					
+					<li id="lB" style="display: none"><a name="B"></a>
+						<div class="nav-indicator" id="nav-b">B</div>
+						<ul id="ulB">
+						</ul></li>
+					<li id="lC" style="display: none"><a name="C"></a>
+						<div class="nav-indicator" id="nav-c">C</div>
+						<ul id="ulC">
+						</ul></li>
+					<li id="lD" style="display: none"><a name="D"></a>
+						<div class="nav-indicator" id="nav-d">D</div>
+						<ul id="ulD">
+						</ul></li>
+					<li id="lE" style="display: none"><a name="E"></a>
+						<div class="nav-indicator" id="nav-e">E</div>
+						<ul id="ulE">
+						</ul></li>
+					<li id="lF" style="display: none"><a name="F"></a>
+						<div class="nav-indicator" id="nav-f">F</div>
+						<ul id="ulF">
+						</ul></li>
+					<li id="lG" style="display: none"><a name="G"></a>
+						<div class="nav-indicator" id="nav-g">G</div>
+						<ul id="ulG">
+						</ul></li>
+					<li id="lH" style="display: none"><a name="H"></a>
+						<div class="nav-indicator" id="nav-h">H</div>
+						<ul id="ulH">
+						</ul></li>
+
+					<li id="lI" style="display: none"><a name="I"></a>
+						<div class="nav-indicator" id="nav-i">I</div>
+						<ul id="ulI">
+						</ul></li>
+					<li id="lJ" style="display: none"><a name="J"></a>
+						<div class="nav-indicator" id="nav-g">J</div>
+						<ul id="ulJ">
+						</ul></li>
+					<li id="lK" style="display: none"><a name="K"></a>
+						<div class="nav-indicator" id="nav-g">K</div>
+						<ul id="ulK">
+						</ul></li>
+						<li id="lL" style="display: none"><a name="L"></a>
+						<div class="nav-indicator" id="nav-g">L</div>
+						<ul id="ulL">
+						</ul></li>
+						<li id="lM" style="display: none"><a name="M"></a>
+						<div class="nav-indicator" id="nav-g">M</div>
+						<ul id="ulM">
+						</ul></li>
+						<li id="lN" style="display: none"><a name="N"></a>
+						<div class="nav-indicator" id="nav-g">N</div>
+						<ul id="ulN">
+						</ul></li>
+						<li id="lO" style="display: none"><a name="O"></a>
+						<div class="nav-indicator" id="nav-g">O</div>
+						<ul id="ulO">
+						</ul></li>
+						<li id="lP" style="display: none"><a name="P"></a>
+						<div class="nav-indicator" id="nav-g">P</div>
+						<ul id="ulP">
+						</ul></li>
+						<li id="lQ" style="display: none"><a name="Q"></a>
+						<div class="nav-indicator" id="nav-g">Q</div>
+						<ul id="ulQ">
+						</ul></li>
+						<li id="lR" style="display: none"><a name="R"></a>
+						<div class="nav-indicator" id="nav-g">R</div>
+						<ul id="ulR">
+						</ul></li>
+						<li id="lS" style="display: none"><a name="S"></a>
+						<div class="nav-indicator" id="nav-g">S</div>
+						<ul id="ulS">
+						</ul></li>
+						<li id="lT" style="display: none"><a name="T"></a>
+						<div class="nav-indicator" id="nav-g">T</div>
+						<ul id="ulT">
+						</ul></li>
+						<li id="lU" style="display: none"><a name="U"></a>
+						<div class="nav-indicator" id="nav-g">U</div>
+						<ul id="ulU">
+						</ul></li>
+						<li id="lV" style="display: none"><a name="V"></a>
+						<div class="nav-indicator" id="nav-g">V</div>
+						<ul id="ulV">
+						</ul></li>
+						<li id="lW" style="display: none"><a name="W"></a>
+						<div class="nav-indicator" id="nav-g">W</div>
+						<ul id="ulW">
+						</ul></li>
+						<li id="lX" style="display: none"><a name="X"></a>
+						<div class="nav-indicator" id="nav-g">X</div>
+						<ul id="ulX">
+						</ul></li>
+						<li id="lY" style="display: none"><a name="Y"></a>
+						<div class="nav-indicator" id="nav-g">Y</div>
+						<ul id="ulY">
+						</ul></li>
+						<li id="lZ" style="display: none"><a name="Z"></a>
+						<div class="nav-indicator" id="nav-g">Z</div>
+						<ul id="ulZ">
+						</ul></li>
+				</ul>
+			</div>
+		</div>
+	</section>
+</body>
 </html>
