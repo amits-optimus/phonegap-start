@@ -7,35 +7,23 @@
 <meta name="author" content="DZineBlog">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <meta name="HandheldFriendly" content="true">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<!-- APPLE TOUCH APP ICONS
-	<link rel="apple-touch-icon" sizes="72x72" href="apple-touch-icon-72x72.png">
-	<link rel="apple-touch-icon" sizes="114x114" href="apple-touch-icon-114x114.png">
-	<link rel="apple-touch-icon" href="apple-touch-icon-57x57.png">
-	-->
-<link rel="shortcut icon"
-	href="http://dzineblog.com/wp-content/themes/journalist/favicon.png">
-<link rel="icon"
-	href="http://dzineblog.com/wp-content/themes/journalist/favicon.png">
+
+
+<!--<link rel="icon" href="http://dzineblog.com/wp-content/themes/journalist/favicon.png">-->
 <link rel="stylesheet" type="text/css" href="styles.css" media="all">
-<link rel="alternate stylesheet" type="text/css" href="responsive.css"
-	media="all">
-<script type="text/javascript"
-	src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
-<script type="text/javascript"
-	src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-	
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
-<script type="text/javascript" src="phonegap.js"></script>
-<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<link rel="alternate stylesheet" type="text/css" href="responsive.css" media="all">
+<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="js/html5.js"></script>
+<link rel="stylesheet" type="text/css" href="jquery-ui.css" media="all">
+<!--<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" media="all">-->
+<script src="js/jquery-ui.js"></script>
 
 <script type="text/javascript">
 
-	var jsonData = '{"items":[{"name":"Acategory","Terms":[{"Term":"ATerm1","Definition":"ADefinition1........................................................................................................................................................................................................................"},{"Term":"ATerm2","Definition":"ADefinition2"}]},{"name":"Bcategory","Terms":[{"Term":"BTerm1","Definition":"BDefinition1"},{"Term":"BTerm2","Definition":"BDefinition2"}]},{"name":"Dcategory","Terms":[{"Term":"DTerm3","Definition":"DDefinition3"}]},{"name":"Ccategory4","Terms":[{"Term":"CTerm4","Definition":"Definition4"}]},{"name":"Ccategory44","Terms":[{"Term":"CTerm44","Definition":"Definition4"}]},{"name":"category5","Terms":[{"Term":"Term5","Definition":"Definition5"}]},{"name":"category6","Terms":[{"Term":"Term6","Definition":"Definition6"}]},{"name":"category7","Terms":[{"Term":"Term7","Definition":"Definition7"}]},{"name":"category8","Terms":[{"Term":"Term8","Definition":"Definition8"}]},{"name":"category9","Terms":[{"Term":"Term9","Definition":"Definition9"}]},{"name":"category10","Terms":[{"Term":"Term10","Definition":"Definition10"},{"Term":"Term11","Definition":"Definition11"}]}]}';
+	var jsonData = '{"items":[{"name":"Acategory","Terms":[{"Term":"ATerm1","Definition":"ADefinition1.........................\\n...................................\\n.....................................\\n........................................\\n................................\\n.........................................\\n........."},{"Term":"ATerm2","Definition":"ADefinition2"}]},{"name":"Bcategory","Terms":[{"Term":"BTerm1","Definition":"BDefinition1"},{"Term":"BTerm2","Definition":"BDefinition2"}]},{"name":"Dcategory","Terms":[{"Term":"DTerm3","Definition":"DDefinition3"}]},{"name":"Ccategory4","Terms":[{"Term":"CTerm4","Definition":"Definition4"}]},{"name":"Ccategory44","Terms":[{"Term":"CTerm44","Definition":"Definition4"}]},{"name":"category5","Terms":[{"Term":"Term5","Definition":"Definition5"}]},{"name":"category6","Terms":[{"Term":"Term6","Definition":"Definition6"}]},{"name":"category7","Terms":[{"Term":"Term7","Definition":"Definition7"}]},{"name":"category8","Terms":[{"Term":"Term8","Definition":"Definition8"}]},{"name":"category9","Terms":[{"Term":"Term9","Definition":"Definition9"}]},{"name":"category10","Terms":[{"Term":"Term10","Definition":"Definition10"},{"Term":"Term11","Definition":"Definition11"}]}]}';
 	var termArray = [];
 	var categoryArray = [];
 	function getListOfTrends() {
@@ -128,6 +116,7 @@
 					$( "#dialog" ).dialog({ width: 250 });
 					document.getElementById("dialog").innerHTML = getDefinitionByTerms(this.innerHTML);
 				}
+				subListItem.style.background='#ffffff';
 				subListItem.className = "listItemIndexList1";
 				subList.appendChild(subListItem);
 			}
@@ -453,6 +442,7 @@
 </script>
 <script type="text/javascript">
 	function tab(tab) {
+		window.scrollTo(0, 0);
 		document.getElementById('tab1').style.display = 'none';
 		document.getElementById('tab2').style.display = 'none';
 		document.getElementById('tab3').style.display = 'none';
@@ -465,7 +455,7 @@
 		document.getElementById('li_tab3').setAttribute("class", "");
 		document.getElementById(tab).style.display = 'block';
 		document.getElementById('li_' + tab).setAttribute("class", "active");
-		document.getElementById('li_' + tab +'_a').style.background = "#f5f5f5";
+		document.getElementById('li_' + tab +'_a').style.background = "#f2f2f2";
 	}
 </script>
 
